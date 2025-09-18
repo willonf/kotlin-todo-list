@@ -20,12 +20,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.intro.components.CustomButton
 import com.example.intro.components.CustomTextField
+import com.example.intro.model.Priority
 import com.example.intro.model.TaskModel
 import com.example.intro.repository.TaskRepository
 import com.example.intro.ui.theme.GreenRadioButtonSelected
@@ -50,7 +54,6 @@ import kotlinx.coroutines.launch
 
 
 fun onClickSaveButton(scope: CoroutineScope, context: Context, task: TaskModel) {
-
     val taskRepository = TaskRepository()
     var taskIsValid = true
 
@@ -78,10 +81,13 @@ fun onClickSaveButton(scope: CoroutineScope, context: Context, task: TaskModel) 
 fun SaveTask(navController: NavController) {
     var taskTitle by remember { mutableStateOf("") }
     var taskDescription by remember { mutableStateOf("") }
+    var taskPriority by remember { mutableIntStateOf(Priority.NO_PRIORITY.value) }
     var noPriority by remember { mutableStateOf(false) }
     var lowPriority by remember { mutableStateOf(false) }
     var mediumPriority by remember { mutableStateOf(false) }
     var highPriority by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -134,7 +140,12 @@ fun SaveTask(navController: NavController) {
                 Text(text = "Prioridade", fontSize = 18.sp)
                 RadioButton(
                     selected = lowPriority,
-                    onClick = {},
+                    onClick = {
+                        taskPriority = Priority.LOW.value
+                        highPriority = false
+                        mediumPriority = false
+                        lowPriority = true
+                    },
                     colors = RadioButtonColors(
                         selectedColor = GreenRadioButtonSelected,
                         unselectedColor = GreenRadioButtonUnselected,
@@ -144,7 +155,12 @@ fun SaveTask(navController: NavController) {
                 )
                 RadioButton(
                     selected = mediumPriority,
-                    onClick = {},
+                    onClick = {
+                        taskPriority = Priority.MEDIUM.value
+                        highPriority = false
+                        mediumPriority = true
+                        lowPriority = false
+                    },
                     colors = RadioButtonColors(
                         selectedColor = YellowRadioButtonSelected,
                         unselectedColor = YellowRadioButtonUnselected,
@@ -154,7 +170,12 @@ fun SaveTask(navController: NavController) {
                 )
                 RadioButton(
                     selected = highPriority,
-                    onClick = {},
+                    onClick = {
+                        taskPriority = Priority.HIGH.value
+                        highPriority = true
+                        mediumPriority = false
+                        lowPriority = false
+                    },
                     colors = RadioButtonColors(
                         selectedColor = RedRadioButtonSelected,
                         unselectedColor = RedRadioButtonUnselected,
@@ -165,7 +186,13 @@ fun SaveTask(navController: NavController) {
             }
 
             CustomButton(
-                onClick = {},
+                onClick = {
+                    onClickSaveButton(
+                        scope,
+                        context,
+                        TaskModel(taskTitle, taskDescription, taskPriority)
+                    )
+                },
                 label = "Salvar",
                 modifier = Modifier
                     .fillMaxWidth()

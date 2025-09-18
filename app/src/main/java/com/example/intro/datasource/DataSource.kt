@@ -28,10 +28,13 @@ class PreferencesDataStore(private val context: Context) {
 
 class FirestoreDataSource {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val collectionReference = firestore.collection("tarefas")
     private val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
     fun saveTask(task: TaskModel) {
+        val documentReference = collectionReference.document()
         val payload = mapOf(
+            "id" to documentReference.id,
             "title" to task.title,
             "description" to task.description,
             "priority" to task.priority,
