@@ -14,13 +14,14 @@ import androidx.compose.ui.unit.sp
 fun CustomButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    label: String
+    label: String,
+    color: Color
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Blue,
+            containerColor = color,
             contentColor = Color.White
         )
     ) {
@@ -30,13 +31,4 @@ fun CustomButton(
             fontSize = 18.sp
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CustomButtonPreview() {
-    CustomButton(
-        label = "Salvar",
-        onClick = {}
-    )
 }

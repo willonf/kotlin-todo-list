@@ -2,6 +2,7 @@ package com.example.intro.view
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,18 +54,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-fun onClickSaveButton(scope: CoroutineScope, context: Context, task: TaskModel) {
+fun onClickSaveButton(
+    scope: CoroutineScope,
+    context: Context,
+    task: TaskModel,
+    navController: NavController
+) {
     val taskRepository = TaskRepository()
     var taskIsValid = true
 
     scope.launch(Dispatchers.IO) {
         taskIsValid = task.title!!.isNotEmpty() && task.description!!.isNotEmpty()
-        taskRepository.saveTask(task)
+        if (taskIsValid) {
+            taskRepository.saveTask(task)
+        }
     }
 
     scope.launch(Dispatchers.Main) {
         if (taskIsValid) {
             Toast.makeText(context, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
         } else {
             if (task.title!!.isEmpty()) {
                 Toast.makeText(context, "Título é obrigatório!", Toast.LENGTH_SHORT).show()
@@ -81,6 +90,7 @@ fun onClickSaveButton(scope: CoroutineScope, context: Context, task: TaskModel) 
 fun SaveTask(navController: NavController) {
     var taskTitle by remember { mutableStateOf("") }
     var taskDescription by remember { mutableStateOf("") }
+    var taskLocation by remember { mutableStateOf("") }
     var taskPriority by remember { mutableIntStateOf(Priority.NO_PRIORITY.value) }
     var noPriority by remember { mutableStateOf(false) }
     var lowPriority by remember { mutableStateOf(false) }
@@ -129,6 +139,17 @@ fun SaveTask(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
+                    .padding(20.dp, 20.dp, 20.dp, 0.dp)
+            )
+
+            CustomTextField(
+                value = taskLocation,
+                label = "Local",
+                onValueChange = { taskLocation = it },
+                maxLines = 1,
+                keyboardType = KeyboardType.Text,
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(20.dp, 20.dp, 20.dp, 0.dp)
             )
 
@@ -185,20 +206,41 @@ fun SaveTask(navController: NavController) {
                 )
             }
 
-            CustomButton(
-                onClick = {
-                    onClickSaveButton(
-                        scope,
-                        context,
-                        TaskModel(taskTitle, taskDescription, taskPriority)
-                    )
-                },
-                label = "Salvar",
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(10.dp)
-            )
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                CustomButton(
+                    onClick = { navController.popBackStack() },
+                    label = "Cancelar",
+                    color = Color.Red,
+                    modifier = Modifier
+                        .height(80.dp)
+                        .padding(10.dp)
+                )
+                CustomButton(
+                    onClick = {
+                        onClickSaveButton(
+                            scope,
+                            context,
+                            TaskModel(
+                                title = taskTitle,
+                                description = taskDescription,
+                                location = taskLocation,
+                                priority = taskPriority
+                            ),
+                            navController
+                        )
+                    },
+                    label = "Salvar",
+                    color = Color.Blue,
+                    modifier = Modifier
+                        .height(80.dp)
+                        .padding(10.dp)
+                )
+            }
         }
     }
 

@@ -8,7 +8,9 @@ enum class Priority(val value: Int) {
 }
 
 data class TaskModel(
+    val id: String? = null,
     val title: String? = null,
     val description: String? = null,
+    val location: String? = null,
     val priority: Int? = null
 )

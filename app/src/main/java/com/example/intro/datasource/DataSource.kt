@@ -8,6 +8,8 @@ import com.example.intro.dataStore
 import com.example.intro.model.TaskModel
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -31,12 +33,16 @@ class FirestoreDataSource {
     private val collectionReference = firestore.collection("tarefas")
     private val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
+    private val _allTasks = MutableStateFlow<MutableList<TaskModel>>(mutableListOf())
+    private val allTasks: StateFlow<MutableList<TaskModel>> = _allTasks
+
     fun saveTask(task: TaskModel) {
         val documentReference = collectionReference.document()
         val payload = mapOf(
             "id" to documentReference.id,
             "title" to task.title,
             "description" to task.description,
+            "location" to task.location,
             "priority" to task.priority,
             "createdAt" to now.date
         )

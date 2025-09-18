@@ -46,31 +46,6 @@ fun TaskList(navController: NavController) {
     }
     val isDarkMode by isDarkModeFlow.collectAsState(initial = false)
 
-    val myTaskList: MutableList<TaskModel> = mutableListOf(
-        TaskModel(
-            title = "Comida para o cachorro",
-            description = "Comprar comida da Lilly",
-            priority = 1
-        ),
-        TaskModel(
-            title = "Estudar Kotlin",
-            description = "Revisar conteúdo da aula de Kotlin",
-            priority = 2
-        ),
-        TaskModel(
-            title = "Comprar passagem",
-            description = "Comprar passagem de avião para NY",
-            priority = 0
-        ),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-        TaskModel(title = "Reprovar no curso", description = "Tirar zero nas provas", priority = 3),
-    )
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -100,9 +75,9 @@ fun TaskList(navController: NavController) {
         }
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
-            items(myTaskList) { taskItem ->
-                TaskItem(task = taskItem)
-            }
+//            items(myTaskList) { taskItem ->
+//                TaskItem(task = taskItem)
+//            }
         }
     }
 }
