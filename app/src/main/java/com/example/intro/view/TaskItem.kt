@@ -57,7 +57,7 @@ fun TaskItem(
                 cardPriorityColor, btnDelete) = createRefs()
 
             Text(
-                text = "Estudar para a prova",
+                text = task.title!!,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.constrainAs(txtTitle) {
                     top.linkTo(
@@ -72,7 +72,7 @@ fun TaskItem(
             )
 
             Text(
-                text = "Revisar todos os slides das aulas",
+                text = task.description!!,
                 modifier = Modifier.constrainAs(txtDescription) {
                     top.linkTo(
                         anchor = txtTitle.bottom,

@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.intro.PreferencesKeys
 import com.example.intro.datasource.PreferencesDataStore
 import com.example.intro.model.TaskModel
+import com.example.intro.repository.TaskRepository
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -39,8 +40,11 @@ import kotlinx.coroutines.launch
 fun TaskList(navController: NavController) {
 
     val scope = rememberCoroutineScope()
-
     val context = LocalContext.current
+
+    val taskRepository = TaskRepository()
+    val taskList by taskRepository.getTasks().collectAsState(initial = mutableListOf())
+
     val isDarkModeFlow = remember {
         PreferencesDataStore(context).getPreference(PreferencesKeys.IS_DARK_MODE)
     }
@@ -75,9 +79,9 @@ fun TaskList(navController: NavController) {
         }
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
-//            items(myTaskList) { taskItem ->
-//                TaskItem(task = taskItem)
-//            }
+            items(taskList) { taskItem ->
+                TaskItem(task = taskItem)
+            }
         }
     }
 }
